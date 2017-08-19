@@ -1,9 +1,22 @@
 // Setup basic express server
+var fs = require('fs');
+var https = require('https');
+
 var express = require('express');
 var app = express();
-var server = require('http').createServer(app);
-var io = require('../')(server);
-var port = process.env.PORT || 5000;
+
+var options = {
+    key: fs.readFileSync('./options/file.pem'),
+    cert: fs.readFileSync('./options/file.crt')
+};
+
+// var server = require('http').createServer(app);
+// var io = require('../')(server);
+// var port = process.env.PORT || 5000;
+
+var server = https.createServer(options, app);
+var io = require('socket.io')(server);
+var port = 443;
 
 server.listen(port, function () {
     console.log('Server listening at port %d', port);
